@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Recipe } from '../Recipe';
 import { recipeData } from '../recipeData';
+import { RecipeService } from '../recipe.service';
 
 @Component({
   selector: 'app-recipe-list',
@@ -9,12 +10,16 @@ import { recipeData } from '../recipeData';
   styleUrl: './recipe-list.component.css',
 })
 export class RecipeListComponent implements OnInit {
-  recipes: Recipe[] = [];
+  recipes: Array<Recipe> = [];
   selected: Boolean = false;
   selectedRecipe: Recipe | null = null;
 
-  constructor() {}
+constructor(private recipeService: RecipeService) { }
 
+  getRecipes(){
+    this.recipeService.getRecipes().subscribe({next: apiData => this.recipes = apiData })
+  }
+  
   ngOnInit() {
     this.recipes = recipeData;
   }
@@ -22,5 +27,9 @@ export class RecipeListComponent implements OnInit {
   onSelect(recipe: Recipe) {
     this.selectedRecipe = recipe;
     this.selected = true;
+  }
+
+  countIngredients(recipe: Recipe): number {
+    return recipe.ingredientes ? recipe.ingredientes.length : 0;
   }
 }
